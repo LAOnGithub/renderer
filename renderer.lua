@@ -30,7 +30,7 @@ function renderer.add_callback(f, identifier)
 end
 function renderer.rectangle(x, y, w, h, r, g, b, a)
     if syn then
-        cached_drawings:insert(create_drawing('Square', {
+        table.insert(cached_drawings, create_drawing('Square', {
             Size = Vector2.new(w, h),
             Position = Vector2.new(x, y),
             Color = Color3.fromRGB(r, g, b),
@@ -38,7 +38,7 @@ function renderer.rectangle(x, y, w, h, r, g, b, a)
             Visible = true
         }))
     else
-        cached_drawings:insert(create_drawing('Rectangle', {
+        table.insert(cached_drawings, create_drawing('Rectangle', {
             Size = Vector2.new(w, h),
             Position = Vector2.new(x, y),
             Color = Color3.fromRGB(r, g, b),
