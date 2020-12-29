@@ -55,7 +55,7 @@ game:GetService("RunService"):BindToRenderStep("renderer", 1, function()
     --// Call the rendering callbacks
     for k, v in next, renderer_callbacks do
         xpcall(v, function(err)
-            print( string.format('renderer function %s: %s', k, err) )
+            error( string.format('renderer function %s: %s', k, err) )
         end)
     end
 
