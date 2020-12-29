@@ -44,3 +44,5 @@ function renderer.rectangle(x, y, w, h, r, g, b, a)
         })
     end
 end
+
+return renderer
