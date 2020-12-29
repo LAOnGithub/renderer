@@ -7,6 +7,7 @@ renderer = {}
 
 local renderer_callbacks = {}
 local cached_drawings = {}
+local last_frame_drawings = {}
 
 --- @param class_name string | "'Rectangle'" | "'Line'" | "'Circle'" | "'Square'" | "'Triangle'" | "'Text'"
 --- @param properties DrawingObject
@@ -29,20 +30,39 @@ function renderer.add_callback(f, identifier)
 end
 function renderer.rectangle(x, y, w, h, r, g, b, a)
     if syn then
-        create_drawing('Square', {
+        cached_drawings:insert(create_drawing('Square', {
             Size = Vector2.new(w, h),
             Position = Vector2.new(x, y),
             Color = Color3.fromRGB(r, g, b),
-            Transparency = a / 255
-        })
+            Transparency = a / 255,
+            Visible = true
+        }))
     else
-        create_drawing('Rectangle', {
+        cached_drawings:insert(create_drawing('Rectangle', {
             Size = Vector2.new(w, h),
             Position = Vector2.new(x, y),
             Color = Color3.fromRGB(r, g, b),
-            Transparency = a / 255
-        })
+            Transparency = a / 255,
+            Visible = true
+        }))
     end
 end
+
+game:GetService("RunService"):BindToRenderStep("renderer", 1, function()
+    --// Put the last drawings into the correct table
+    last_frame_drawings = cached_drawings
+
+    --// Call the rendering callbacks
+    for k, v in next, renderer_callbacks do
+        xpcall(v, function(err)
+            print( string.format('renderer function %s: %s', k, err) )
+        end)
+    end
+
+    --// Remove the last frame drawing (do this last so it doesn't look jittery)
+    for k, v in next, last_frame_drawings do
+        v:Remove()
+    end
+end)
 
 return renderer
